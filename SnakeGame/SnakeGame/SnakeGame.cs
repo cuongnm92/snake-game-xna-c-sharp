@@ -18,6 +18,7 @@ namespace SnakeGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        ScreenManager screenManager;
 
         public SnakeGame()
         {
@@ -26,9 +27,15 @@ namespace SnakeGame
             //Windows size
             graphics.PreferredBackBufferWidth = 1280;
             graphics.PreferredBackBufferHeight = 720;
-            
 
             Content.RootDirectory = "Content";
+
+            // add a gamer-services component, which is required for the storage APIs
+            Components.Add(new GamerServicesComponent(this));
+
+            // add the screen manager
+            screenManager = new ScreenManager(this);
+            Components.Add(screenManager);
         }
 
         /// <summary>
