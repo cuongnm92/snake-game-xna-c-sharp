@@ -58,6 +58,14 @@ namespace SnakeGame
             }
         }
 
+        public int getPurpose
+        {
+            get
+            {
+                return purpose;
+            }
+        }
+
         protected virtual Rectangle collisionRect
         {
             get

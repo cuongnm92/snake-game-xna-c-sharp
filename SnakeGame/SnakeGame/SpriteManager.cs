@@ -25,10 +25,9 @@ namespace SnakeGame
         //Font
         SpriteFont font;
 
-        //Input Texture
+        //Texture
         Texture2D mouseTexture;
 
-        //Menu Texture
         Texture2D mainMenuBackGround;
         Texture2D nameMenuTexture;
         Texture2D startGameButton;
@@ -38,8 +37,14 @@ namespace SnakeGame
         Texture2D aboutGameButton;
         Texture2D exitGameButton;
 
+        Texture2D selectDiffBackGround;
+        Texture2D easyGameButton;
+        Texture2D normalGameButton;
+        Texture2D hardGameButton;
+
         //Menu Object
         Menu mainMenu;
+        Menu selectDiff;
 
         //Input Object
         Cursor cursor;
@@ -74,6 +79,10 @@ namespace SnakeGame
             aboutGameButton = Game.Content.Load<Texture2D>(@"Images\Button\AboutGameMenuButton");
             exitGameButton = Game.Content.Load<Texture2D>(@"Images\Button\ExitGameMenuButton");
 
+            selectDiffBackGround = Game.Content.Load<Texture2D>(@"Images\diffbackground");
+            easyGameButton = Game.Content.Load<Texture2D>(@"Images\Button\EasyMenuButton");
+            normalGameButton = Game.Content.Load<Texture2D>(@"Images\Button\NormalMenuButton");
+            hardGameButton = Game.Content.Load<Texture2D>(@"Images\Button\HardMenuButton");
 
             Point frameSize = new Point(startGameButton.Height, startGameButton.Width);
 
@@ -95,6 +104,13 @@ namespace SnakeGame
             mainMenu.AddButton(aboutGameButton, center + new Vector2(300, 450), 5);
             mainMenu.AddButton(exitGameButton, center + new Vector2(300, 500), 6);
 
+            // Select Difficult 
+            selectDiff = new Menu(frameSize, font, window);
+            selectDiff.AddButton(easyGameButton, center + new Vector2(240, 100), 1);
+            selectDiff.AddButton(normalGameButton, center + new Vector2(320, 190), 2);
+            selectDiff.AddButton(hardGameButton, center + new Vector2(400, 280), 3);
+
+            //selectDiff.AddButton();
 
             base.LoadContent();
         }
@@ -119,6 +135,20 @@ namespace SnakeGame
             base.Initialize();
         }
 
+        public void updateDifficult(int purpose)
+        {
+            gameState = GameState.InGame;
+            if (purpose == 1)
+            {
+            }
+            else if (purpose == 2)
+            {
+            }
+            else
+            {
+            }
+        }
+
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
@@ -137,6 +167,24 @@ namespace SnakeGame
                 case GameState.MainMenu:
                     {
                         mainMenu.Update(gameTime);
+                        if (mainMenu.ClickedButtonPurpose == 1)
+                            gameState = GameState.SelectDifficulty;
+                        else if (mainMenu.ClickedButtonPurpose == 2)
+                            gameState = GameState.LoadGame;
+                        else if (mainMenu.ClickedButtonPurpose == 3)
+                            gameState = GameState.Score;
+                        else if (mainMenu.ClickedButtonPurpose == 4)
+                            gameState = GameState.Option;
+                        else if (mainMenu.ClickedButtonPurpose == 5)
+                            gameState = GameState.About;
+
+                        break;
+                    }
+
+                case GameState.SelectDifficulty:
+                    {
+                        selectDiff.Update(gameTime);
+                        updateDifficult(selectDiff.ClickedButtonPurpose);
                         break;
                     }
             }
@@ -164,6 +212,13 @@ namespace SnakeGame
                             new Vector2(nameMenuTexture.Width / 2f, nameMenuTexture.Height / 2f), 1f, SpriteEffects.None, 0);
 
                         mainMenu.Draw(gameTime, spriteBatch);
+                        break;
+                    }
+                case GameState.SelectDifficulty:
+                    {
+                        useMouse = true;
+                        spriteBatch.Draw(selectDiffBackGround, new Rectangle(0, 0, window.Width, window.Height), Color.White);
+                        selectDiff.Draw(gameTime, spriteBatch);
                         break;
                     }
             }

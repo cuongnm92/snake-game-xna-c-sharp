@@ -16,7 +16,7 @@ namespace SnakeGame
     enum ControlMethod { Mouse, Keyboard };
     enum Side { Snake, Mouse, None };
     enum Difficulty { Easy, Medium, Difficult };
-    enum GameState { MainMenu, HowToPlay, About, SelectShip, SelectControl, SelectDifficulty, InGame, Won, Lost, Results };
+    enum GameState { MainMenu, LoadGame, Score , Option , About, SelectControl, SelectDifficulty, InGame, Won, Lost, Results };
     enum WallpaperType { Streched, Centered };
 
     /// <summary>

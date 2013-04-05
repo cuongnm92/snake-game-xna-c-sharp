@@ -39,6 +39,17 @@ namespace SnakeGame
                 button.Draw(gameTime, spriteBatch);
         }
 
+        public virtual int ClickedButtonPurpose
+        {
+            get
+            {
+                foreach (Button button in buttons)
+                    if (button.Clicked) return button.getPurpose;
+
+                return 0;
+            }
+        }
+
         public void AddButton(Texture2D buttonTexture, Vector2 position, int purpose)
         {
             buttons.Add(new Button(buttonTexture, position, purpose));

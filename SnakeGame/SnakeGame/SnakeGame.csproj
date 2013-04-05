@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animal.cs" />
     <Compile Include="Input\Cursor.cs" />
     <Compile Include="MenuScreens\ButtonAndLabel\Button.cs" />
     <Compile Include="MenuScreens\Menu.cs" />
