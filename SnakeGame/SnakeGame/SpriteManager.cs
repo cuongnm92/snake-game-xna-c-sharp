@@ -135,11 +135,12 @@ namespace SnakeGame
             base.Initialize();
         }
 
-        public void updateDifficult(int purpose)
+        public void updateDifficult(GameTime gameTime, int purpose)
         {
             gameState = GameState.InGame;
             if (purpose == 1)
             {
+
             }
             else if (purpose == 2)
             {
@@ -184,7 +185,7 @@ namespace SnakeGame
                 case GameState.SelectDifficulty:
                     {
                         selectDiff.Update(gameTime);
-                        updateDifficult(selectDiff.ClickedButtonPurpose);
+                        if (selectDiff.ClickedButtonPurpose > 0) updateDifficult(gameTime, selectDiff.ClickedButtonPurpose);
                         break;
                     }
             }
