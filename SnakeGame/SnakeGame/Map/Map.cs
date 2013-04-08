@@ -1,58 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Content;
 using System.IO;
+using System.Linq;
+
 using Microsoft.Xna.Framework;
-using System.Diagnostics;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Net;
+using Microsoft.Xna.Framework.Storage;
 
 namespace SnakeGame
 {
     class Map
     {
-        protected const int maxn = 1000;
+        int mapIndex;
 
-        protected int currentMapIndex;
-        protected int lastMapIndex;
+        Rectangle window;
 
-        protected Point mapDimension;
-        protected Point titleSize;
+        ContentManager content;
 
+        Texture2D backgroundMap;
 
-        protected Texture2D mapTex;
-
-        protected String mapFileName;
-
-        protected int[][] mapTitleValue;
-
-        public Map(Texture2D mapTex, Point mapDimension, Point titleSize)
+        public Map(ContentManager content, int mapIndex, Rectangle window)
         {
-            this.currentMapIndex = 1;
-            this.lastMapIndex = 1;
-            this.mapFileName = "";
+            this.content = content;
+            this.mapIndex = mapIndex;
+            this.window = window;
 
-            this.mapDimension = mapDimension;
-            this.mapTex = mapTex;
-            this.titleSize = titleSize;
-
-            this.mapTitleValue = new int[maxn][];
-            for (int i = 0; i < maxn; i++)
-            {
-                this.mapTitleValue[i] = new int[maxn];
-            }
+            this.updateRegion();
         }
 
-        private void ReadingMapFile(String mapFileName)
+        private void updateRegion()
         {
-            StreamReader reader = new StreamReader(TitleContainer.OpenStream(mapFileName));
+        }
 
-            for (int i = 0; i < mapDimension.X; i++)
-                for (int j = 0; j < mapDimension.Y; j++)
-                {
+        public void setBackgroundMap(String imageName)
+        {
+            this.backgroundMap = content.Load<Texture2D>(@"Images\Map\" + imageName);
+        }
 
-                }
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(backgroundMap, new Rectangle(0, 0, window.Width, window.Height), Color.White);
         }
     }
 }

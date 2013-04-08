@@ -16,7 +16,7 @@ namespace SnakeGame
     enum ControlMethod { Mouse, Keyboard };
     enum Side { Snake, Mouse, None };
     enum Difficulty { Easy, Medium, Difficult };
-    enum GameState { MainMenu, LoadGame, Score , Option , About, SelectControl, SelectDifficulty, InGame, Won, Lost, Results };
+    enum GameState { MainMenu, LoadGame, Score, Option, About, Exit, SelectControl, SelectDifficulty, InGame, Won, Lost, Results };
     enum WallpaperType { Streched, Centered };
 
     /// <summary>
@@ -49,6 +49,8 @@ namespace SnakeGame
 
             spriteManager = new SpriteManager(this);
             Components.Add(spriteManager);
+
+            spriteManager.setContentManager(Content);
 
             base.Initialize();
         }
@@ -83,6 +85,9 @@ namespace SnakeGame
         {
             // Allows the game to exit
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
+
+            if (spriteManager.StopGame())
                 this.Exit();
 
             // TODO: Add your update logic here

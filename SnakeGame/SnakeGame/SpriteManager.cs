@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -17,6 +18,8 @@ namespace SnakeGame
 {
     class SpriteManager : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        ContentManager content;
+
         SpriteBatch spriteBatch;
         Rectangle window;
 
@@ -53,6 +56,10 @@ namespace SnakeGame
         Vector2 mousePosition;
 
         bool useMouse;
+
+        // Map
+        int mapIndex;
+        Map map;
 
         public SpriteManager(Game game)
             : base(game)
@@ -124,6 +131,11 @@ namespace SnakeGame
             // TODO: Unload any non ContentManager content here
         }
 
+        public void setContentManager(ContentManager content)
+        {
+            this.content = content;
+        }
+
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
@@ -131,6 +143,10 @@ namespace SnakeGame
         public override void Initialize()
         {
             window = Game.Window.ClientBounds;
+
+            this.mapIndex = 1;
+            map = new Map(content, mapIndex, window);
+            map.setBackgroundMap("map-background-1");
 
             base.Initialize();
         }
@@ -178,6 +194,8 @@ namespace SnakeGame
                             gameState = GameState.Option;
                         else if (mainMenu.ClickedButtonPurpose == 5)
                             gameState = GameState.About;
+                        else if (mainMenu.ClickedButtonPurpose == 6)
+                            gameState = GameState.Exit;
 
                         break;
                     }
@@ -222,6 +240,12 @@ namespace SnakeGame
                         selectDiff.Draw(gameTime, spriteBatch);
                         break;
                     }
+                case GameState.InGame:
+                    {
+                        GraphicsDevice.Clear(Color.Green);
+                        map.Draw(spriteBatch);
+                        break;
+                    }
             }
 
             if (gameState != GameState.InGame)
@@ -233,6 +257,11 @@ namespace SnakeGame
 
 
             base.Draw(gameTime);
+        }
+
+        public bool StopGame()
+        {
+            return (gameState == GameState.Exit);
         }
     }
 }
