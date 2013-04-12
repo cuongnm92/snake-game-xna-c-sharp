@@ -1,0 +1,1 @@
+F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGameContent\obj\x86\Debug\ResolveAssemblyReference.cache
