@@ -19,3 +19,4 @@ F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\obj\x86\Debu
 F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
 F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\obj\x86\Debug\SnakeGame.exe
 F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\obj\x86\Debug\SnakeGame.pdb
+F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\bin\x86\Debug\Content\Images\Sprite\rat.xnb

@@ -51,6 +51,7 @@ namespace SnakeGame
             Components.Add(spriteManager);
 
             spriteManager.setContentManager(Content);
+            spriteManager.setScreenSize(graphics.GraphicsDevice.Viewport.Width, graphics.GraphicsDevice.Viewport.Height);
 
             base.Initialize();
         }

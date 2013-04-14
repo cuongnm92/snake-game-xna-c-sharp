@@ -136,6 +136,15 @@
       <Output>F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\bin\x86\Debug\Content\Fonts\Arial.xnb</Output>
       <Time>2013-04-12T12:47:26.9844274+07:00</Time>
     </Item>
+    <Item>
+      <Source>Images\Sprite\rat.png</Source>
+      <Name>Images\Sprite\rat</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\bin\x86\Debug\Content\Images\Sprite\rat.xnb</Output>
+      <Time>2013-04-15T01:37:38.1379396+07:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

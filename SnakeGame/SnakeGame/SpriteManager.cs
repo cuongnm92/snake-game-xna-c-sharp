@@ -45,6 +45,8 @@ namespace SnakeGame
         Texture2D normalGameButton;
         Texture2D hardGameButton;
 
+        Texture2D ratTexture;
+
         //Menu Object
         Menu mainMenu;
         Menu selectDiff;
@@ -60,6 +62,12 @@ namespace SnakeGame
         // Map
         int mapIndex;
         Map map;
+
+        int gWidth;
+        int gHeight;
+
+        //Animal
+        Rat rat;
 
         public SpriteManager(Game game)
             : base(game)
@@ -91,6 +99,8 @@ namespace SnakeGame
             normalGameButton = Game.Content.Load<Texture2D>(@"Images\Button\NormalMenuButton");
             hardGameButton = Game.Content.Load<Texture2D>(@"Images\Button\HardMenuButton");
 
+            ratTexture = Game.Content.Load<Texture2D>(@"Images\Sprite\rat");
+
             Point frameSize = new Point(startGameButton.Height, startGameButton.Width);
 
             //Cursor Object
@@ -119,6 +129,8 @@ namespace SnakeGame
 
             //selectDiff.AddButton();
 
+            rat = new Rat(ratTexture, new Point(40, 40), new Vector2(0, 0), new Vector2(1, 1), gWidth, gHeight);
+
             base.LoadContent();
         }
 
@@ -134,6 +146,12 @@ namespace SnakeGame
         public void setContentManager(ContentManager content)
         {
             this.content = content;
+        }
+
+        public void setScreenSize(int gWidth, int gHeight)
+        {
+            this.gWidth = gWidth;
+            this.gHeight = gHeight;
         }
 
         /// <summary>
@@ -206,6 +224,11 @@ namespace SnakeGame
                         if (selectDiff.ClickedButtonPurpose > 0) updateDifficult(gameTime, selectDiff.ClickedButtonPurpose);
                         break;
                     }
+                case GameState.InGame:
+                    {
+                        rat.Update(gameTime);
+                        break;
+                    }
             }
 
             base.Update(gameTime);
@@ -244,6 +267,7 @@ namespace SnakeGame
                     {
                         GraphicsDevice.Clear(Color.Green);
                         map.Draw(spriteBatch);
+                        rat.Draw(gameTime, spriteBatch);
                         break;
                     }
             }
