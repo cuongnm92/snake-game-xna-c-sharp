@@ -114,7 +114,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnakeGame.cs" />
     <Compile Include="SpriteManager.cs" />
-    <Compile Include="Sprites\Rat.cs" />
+    <Compile Include="Sprites\Player.cs" />
     <Compile Include="Sprites\Sprite.cs" />
   </ItemGroup>
   <ItemGroup>

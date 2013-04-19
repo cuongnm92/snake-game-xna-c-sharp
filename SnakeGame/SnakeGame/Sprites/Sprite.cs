@@ -5,52 +5,131 @@ using System.Text;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Audio;
 
 namespace SnakeGame
 {
     abstract class Sprite
     {
-        //Direction of sprite : DOWN LEFT RIGHT UP
-        protected int[] dx = new int[4] { 0, -1, 1, 0 };
-        protected int[] dy = new int[4] { 1, 0, 0, -1 };
-
-        protected bool isAlive;
-
-        protected Texture2D texImage;
-
+        // Stuff needed to draw the sprite
+        Texture2D textureImage;
         protected Point frameSize;
         protected Point currentFrame;
+        protected float scale = 1;
+        protected float originalScale = 1;
 
-        protected Vector2 position;
+        // Speed stuff
+        Vector2 originalSpeed;
+
+        // Collision data
+        int collisionOffset;
+
+        // Framerate stuff
+        int timeSinceLastFrame = 0;
+        int millisecondsPerFrame;
+        const int defaultMillisecondsPerFrame = 16;
+
+        // Movement data
         protected Vector2 speed;
+        protected Vector2 position;
 
-        protected int direction;
-        protected int gWidth;
-        protected int gHeight;
+        // Sound stuff
+        public string collisionCueName { get; private set; }
 
-        public Sprite(Texture2D texImage, Point frameSize, Vector2 position, Vector2 speed, int gWidth, int gHeight)
+        // Abstract definition of direction property
+        public abstract Vector2 direction
         {
-            this.texImage = texImage;
-            this.frameSize = frameSize;
-            this.position = position;
-            this.speed = speed;
-            this.gWidth = gWidth;
-            this.gHeight = gHeight;
-
-            this.currentFrame = new Point(0, 0);
-            this.isAlive = true;
-            this.direction = 0;
+            get;
         }
 
-        public virtual bool outOfBound(Vector2 spritePosition)
+        // Get current position of the sprite
+        public Vector2 GetPosition
         {
-            int xMax = gWidth - texImage.Width;
-            int yMax = gHeight - texImage.Height;
-            int xMin = 0;
-            int yMin = 0;
+            get { return position; }
+        }
 
-            if (spritePosition.X > xMax || spritePosition.X < xMin || spritePosition.Y > yMax || spritePosition.Y < yMin)
+
+        // Get/set score
+        public int scoreValue { get; protected set; }
+
+        public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
+            int collisionOffset, Point currentFrame, Vector2 speed,
+            string collisionCueName, int scoreValue)
+            : this(textureImage, position, frameSize, collisionOffset, currentFrame,
+             speed, defaultMillisecondsPerFrame, collisionCueName,
+            scoreValue)
+        {
+        }
+
+        public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
+            int collisionOffset, Point currentFrame, Vector2 speed,
+            int millisecondsPerFrame, string collisionCueName, int scoreValue)
+        {
+            this.textureImage = textureImage;
+            this.position = position;
+            this.frameSize = frameSize;
+            this.collisionOffset = collisionOffset;
+            this.currentFrame = currentFrame;
+            this.speed = speed;
+            originalSpeed = speed;
+            this.collisionCueName = collisionCueName;
+            this.millisecondsPerFrame = millisecondsPerFrame;
+            this.scoreValue = scoreValue;
+        }
+
+        public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
+            int collisionOffset, Point currentFrame, Vector2 speed,
+            string collisionCueName, int scoreValue, float scale)
+            : this(textureImage, position, frameSize, collisionOffset, currentFrame,
+             speed, defaultMillisecondsPerFrame, collisionCueName,
+            scoreValue)
+        {
+            this.scale = scale;
+        }
+
+        public virtual void Update(GameTime gameTime, Rectangle clientBounds)
+        {
+
+            // Update frame if time to do so based on framerate
+            timeSinceLastFrame += gameTime.ElapsedGameTime.Milliseconds;
+            if (timeSinceLastFrame > millisecondsPerFrame)
+            {
+                // Increment to next frame
+                timeSinceLastFrame = 0;
+                currentFrame.X = (currentFrame.X + 1) % 4;
+            }
+        }
+
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(textureImage,
+                position,
+                new Rectangle(currentFrame.X * frameSize.X,
+                    currentFrame.Y * frameSize.Y,
+                    frameSize.X, frameSize.Y),
+                Color.White, 0, Vector2.Zero,
+                scale, SpriteEffects.None, 0);
+        }
+
+        // Gets the collision rect based on position, framesize and collision offset
+        public Rectangle collisionRect
+        {
+            get
+            {
+                return new Rectangle(
+                    (int)(position.X + (collisionOffset * scale)),
+                    (int)(position.Y + (collisionOffset * scale)),
+                    (int)((frameSize.X - (collisionOffset * 2)) * scale),
+                    (int)((frameSize.Y - (collisionOffset * 2)) * scale));
+            }
+        }
+
+        // Detect if this sprite is off the screen and irrelevant
+        public bool IsOutOfBounds(Rectangle clientRect)
+        {
+            if (position.X < -frameSize.X ||
+                position.X > clientRect.Width ||
+                position.Y < -frameSize.Y ||
+                position.Y > clientRect.Height)
             {
                 return true;
             }
@@ -58,16 +137,24 @@ namespace SnakeGame
             return false;
         }
 
-        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public void ModifyScale(float modifier)
         {
-            // Draw the sprite
-            spriteBatch.Draw(texImage,
-                position,
-                new Rectangle(currentFrame.X * frameSize.X,
-                    currentFrame.Y * frameSize.Y,
-                    frameSize.X, frameSize.Y),
-                Color.White, 0, Vector2.Zero,
-                1f, SpriteEffects.None, 0);
+            scale *= modifier;
+        }
+
+        public void ResetScale()
+        {
+            scale = originalScale;
+        }
+
+        public void ModifySpeed(float modifier)
+        {
+            speed *= modifier;
+        }
+
+        public void ResetSpeed()
+        {
+            speed = originalSpeed;
         }
     }
 }
