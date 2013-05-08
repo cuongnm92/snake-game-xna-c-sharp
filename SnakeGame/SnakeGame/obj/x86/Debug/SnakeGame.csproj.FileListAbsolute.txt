@@ -21,3 +21,4 @@ F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\obj\x86\Debu
 F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\obj\x86\Debug\SnakeGame.pdb
 F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\bin\x86\Debug\Content\Images\Sprite\rat.xnb
 F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\bin\x86\Debug\Content\Images\Sprite\snakee.xnb
+F:\WorkSpace\projects\Github\group01-snake-game\SnakeGame\SnakeGame\bin\x86\Debug\Content\Fonts\Score.xnb

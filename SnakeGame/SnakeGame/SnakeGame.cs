@@ -27,10 +27,17 @@ namespace SnakeGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteManager spriteManager;
+        
+        // Random number generator
+        public Random rnd { get; private set; }
+
 
         public SnakeGame()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            rnd = new Random();
+
             Content.RootDirectory = "Content";
         }
 

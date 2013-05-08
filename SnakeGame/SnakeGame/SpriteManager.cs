@@ -18,6 +18,8 @@ namespace SnakeGame
 {
     class SpriteManager : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        const int addPoint = 1;
+
         ContentManager content;
 
         SpriteBatch spriteBatch;
@@ -27,6 +29,7 @@ namespace SnakeGame
 
         //Font
         SpriteFont font;
+        SpriteFont scoreFont;
 
         //Texture
         Texture2D mouseTexture;
@@ -49,6 +52,9 @@ namespace SnakeGame
         Texture2D snakeTexture;
         Texture2D playerTexture;
 
+        // Scoring
+        int evadingSpritePointValue = 0;
+
         //Menu Object
         Menu mainMenu;
         Menu selectDiff;
@@ -67,6 +73,21 @@ namespace SnakeGame
 
         //Sprite
         Player player;
+        List<Rat> rats = new List<Rat>();
+
+        // Variables for spawning new rats
+        int ratSpawnMinMilliseconds = 1000;
+        int ratSpawnMaxMilliseconds = 2000;
+        int ratMinSpeed = 2;
+        int ratMaxSpeed = 6;
+        int nextSpawnTime = 0;
+
+        //Spawn time variables
+        int nextSpawnTimeChange = 5000;
+        int timeSinceLastSpawnTimeChange = 0;
+
+        // Powerup stuff
+        int powerUpExpiration = 0;
 
         public SpriteManager(Game game)
             : base(game)
@@ -79,6 +100,7 @@ namespace SnakeGame
 
             //Loading fonts
             font = Game.Content.Load<SpriteFont>(@"Fonts\Arial");
+            scoreFont = Game.Content.Load<SpriteFont>(@"Fonts\Score");
 
             //Loading texture for input
             mouseTexture = Game.Content.Load<Texture2D>(@"Images\Input\cursor");
@@ -160,6 +182,9 @@ namespace SnakeGame
         {
             window = Game.Window.ClientBounds;
 
+            // Initialize spawn time
+            ResetSpawnTime();
+
             this.mapIndex = 1;
             map = new Map(content, mapIndex, window);
             map.setBackgroundMap("map-background-1");
@@ -179,6 +204,57 @@ namespace SnakeGame
             }
             else
             {
+            }
+        }
+
+        private void UpdateSpawnSprite(GameTime gameTime)
+        {
+            nextSpawnTime -= gameTime.ElapsedGameTime.Milliseconds;
+            if (nextSpawnTime < 0)
+            {
+                SpawnRat();
+
+                // Reset spawn timer
+                ResetSpawnTime();
+            }
+
+            // Adjust sprite spawn times
+            AdjustSpawnTimes(gameTime);
+
+            // Expire Powerups?
+            CheckPowerUpExpiration(gameTime);
+        }
+
+        private void UpdateSpriteMovement(GameTime gameTime, Rectangle window)
+        {
+            foreach (Rat r in rats)
+                r.Update(gameTime, window);
+        }
+
+        private void CheckCollision(GameTime gameTime)
+        {
+            for (int i = 0; i < rats.Count; i++)
+            {
+                Rat r = rats[i];
+
+                // Check for collisions
+                if (r.collisionRect.Intersects(player.collisionRect))
+                {
+                    //Updata score value
+
+                    player.UpdateScore(addPoint);
+
+                    // Remove collided sprite from the game
+                    rats.RemoveAt(i);
+                    --i;
+                }
+
+                // Remove object if it is out of bounds
+                if (r.IsOutOfBounds(Game.Window.ClientBounds))
+                {
+                    rats.RemoveAt(i);
+                    --i;
+                }
             }
         }
 
@@ -224,6 +300,9 @@ namespace SnakeGame
                 case GameState.InGame:
                     {
                         player.Update(gameTime, window);
+                        UpdateSpawnSprite(gameTime);
+                        UpdateSpriteMovement(gameTime, window);
+                        CheckCollision(gameTime);
                         break;
                     }
             }
@@ -265,6 +344,19 @@ namespace SnakeGame
                         GraphicsDevice.Clear(Color.Green);
                         map.Draw(spriteBatch);
                         player.Draw(gameTime, spriteBatch);
+
+                        // Draw rats
+                        foreach (Rat r in rats)
+                            r.Draw(gameTime, spriteBatch);
+
+                        //Draw score 
+                        // Draw fonts
+                        spriteBatch.DrawString(scoreFont,
+                            "Score: " + player.getScoreValue(),
+                            new Vector2(10, 10), Color.BlueViolet,
+                            0, Vector2.Zero,
+                            1, SpriteEffects.None, 1);
+
                         break;
                     }
             }
@@ -283,6 +375,132 @@ namespace SnakeGame
         public bool StopGame()
         {
             return (gameState == GameState.Exit);
+        }
+
+        // Return current position of the player sprite
+        public Vector2 GetPlayerPosition()
+        {
+            return player.GetPosition;
+        }
+
+        private void ResetSpawnTime()
+        {
+            // Set the next spawn time for an enemy
+            nextSpawnTime = ((SnakeGame)Game).rnd.Next(
+                ratSpawnMinMilliseconds,
+                ratSpawnMaxMilliseconds);
+        }
+
+        private void SpawnRat()
+        {
+            Vector2 speed = Vector2.Zero;
+            Vector2 position = Vector2.Zero;
+
+            // Default frame size
+            Point frameSize = new Point(40, 40);
+            Point currentFrame = new Point(0, 0);
+
+            // Randomly choose which side of the screen to place enemy,
+            // then randomly create a position along that side of the screen
+            // and randomly choose a speed for the enemy
+            switch (((SnakeGame)Game).rnd.Next(4))
+            {
+                case 0: // LEFT to RIGHT
+                    position = new Vector2(
+                        -frameSize.X, ((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferHeight
+                        - frameSize.Y));
+
+                    speed = new Vector2(((SnakeGame)Game).rnd.Next(
+                        ratMinSpeed,
+                        ratMaxSpeed), 0);
+
+                    currentFrame.Y = 2;
+                    break;
+
+                case 1: // RIGHT to LEFT
+                    position = new
+                        Vector2(
+                        Game.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                        ((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferHeight
+                        - frameSize.Y));
+
+                    speed = new Vector2(-((SnakeGame)Game).rnd.Next(
+                       ratMinSpeed, ratMaxSpeed), 0);
+
+                    currentFrame.Y = 1;
+                    break;
+
+                case 2: // BOTTOM to TOP
+                    position = new Vector2(((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferWidth
+                        - frameSize.X),
+                        Game.GraphicsDevice.PresentationParameters.BackBufferHeight);
+
+                    speed = new Vector2(0,
+                       -((SnakeGame)Game).rnd.Next(ratMinSpeed,
+                       ratMaxSpeed));
+
+                    currentFrame.Y = 3;
+                    break;
+
+                case 3: // TOP to BOTTOM
+                    position = new Vector2(((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferWidth
+                        - frameSize.X), -frameSize.Y);
+
+                    speed = new Vector2(0,
+                        ((SnakeGame)Game).rnd.Next(ratMinSpeed,
+                        ratMaxSpeed));
+                    break;
+            }
+
+            // Create the sprite
+            rats.Add(
+                new Rat(ratTexture, position, new Point(40, 40), 10, currentFrame, speed, null, this, 1f, 150, evadingSpritePointValue));
+        }
+
+        protected void AdjustSpawnTimes(GameTime gameTime)
+        {
+            // If the spawn max time is > 500 milliseconds
+            // decrease the spawn time if it is time to do
+            // so based on the spawn-timer variables
+            if (ratSpawnMaxMilliseconds > 500)
+            {
+                timeSinceLastSpawnTimeChange += gameTime.ElapsedGameTime.Milliseconds;
+                if (timeSinceLastSpawnTimeChange > nextSpawnTimeChange)
+                {
+                    timeSinceLastSpawnTimeChange -= nextSpawnTimeChange;
+                    if (ratSpawnMaxMilliseconds > 1000)
+                    {
+                        ratSpawnMaxMilliseconds -= 100;
+                        ratSpawnMinMilliseconds -= 100;
+                    }
+                    else
+                    {
+                        ratSpawnMaxMilliseconds -= 10;
+                        ratSpawnMinMilliseconds -= 10;
+                    }
+                }
+            }
+        }
+
+        protected void CheckPowerUpExpiration(GameTime gameTime)
+        {
+            // Is a power-up active?
+            if (powerUpExpiration > 0)
+            {
+                // Decrement power-up timer
+                powerUpExpiration -= gameTime.ElapsedGameTime.Milliseconds;
+                if (powerUpExpiration <= 0)
+                {
+                    // If power-up timer has expired, end all power-ups
+                    powerUpExpiration = 0;
+                    player.ResetScale();
+                    player.ResetSpeed();
+                }
+            }
         }
     }
 }

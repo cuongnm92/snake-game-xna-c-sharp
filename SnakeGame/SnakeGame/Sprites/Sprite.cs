@@ -49,7 +49,7 @@ namespace SnakeGame
 
 
         // Get/set score
-        public int scoreValue { get; protected set; }
+        public int scoreValue;
 
         public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
             int collisionOffset, Point currentFrame, Vector2 speed,
@@ -70,7 +70,7 @@ namespace SnakeGame
             this.collisionOffset = collisionOffset;
             this.currentFrame = currentFrame;
             this.speed = speed;
-            originalSpeed = speed;
+            this.originalSpeed = speed;
             this.collisionCueName = collisionCueName;
             this.millisecondsPerFrame = millisecondsPerFrame;
             this.scoreValue = scoreValue;
@@ -155,6 +155,16 @@ namespace SnakeGame
         public void ResetSpeed()
         {
             speed = originalSpeed;
+        }
+
+        public void UpdateScore(int newPoint)
+        {
+            this.scoreValue += newPoint;
+        }
+
+        public int getScoreValue()
+        {
+            return this.scoreValue;
         }
     }
 }
