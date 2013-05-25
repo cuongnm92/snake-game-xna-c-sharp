@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{2A44854C-5128-4A1D-A294-FB59ED10A669}</ProjectGuid>
+    <ProjectGuid>{A3014C2C-4382-4AB1-B4A0-EDD1B2234A74}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -14,7 +14,7 @@
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>0f2d4dcf-1026-4a52-8364-39a41f8f529a</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>c65905dd-b4a6-45bb-b878-3016b590852f</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
@@ -108,15 +108,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\Cursor.cs" />
-    <Compile Include="Map\Map.cs" />
+    <Compile Include="Input\InputController.cs" />
     <Compile Include="MenuScreens\ButtonAndLabel\Button.cs" />
+    <Compile Include="MenuScreens\MainMenu.cs" />
     <Compile Include="MenuScreens\Menu.cs" />
+    <Compile Include="MenuScreens\ModeSelecting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="SnakeGame.cs" />
-    <Compile Include="SpriteManager.cs" />
-    <Compile Include="Sprites\Rat.cs" />
-    <Compile Include="Sprites\Player.cs" />
-    <Compile Include="Sprites\Sprite.cs" />
+    <Compile Include="SpaceMode\Map\SpaceMap.cs" />
+    <Compile Include="SpaceMode\SpaceModeManager.cs" />
+    <Compile Include="SpaceMode\Sprites\AutomatedSprite.cs" />
+    <Compile Include="SpaceMode\Sprites\ChasingSprite.cs" />
+    <Compile Include="SpaceMode\Sprites\EvadingSprite.cs" />
+    <Compile Include="SpaceMode\Sprites\Player.cs" />
+    <Compile Include="SpaceMode\Sprites\Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

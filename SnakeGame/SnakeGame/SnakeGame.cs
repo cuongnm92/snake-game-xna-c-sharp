@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -11,13 +12,12 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Net;
 using Microsoft.Xna.Framework.Storage;
 
+
 namespace SnakeGame
 {
-    enum ControlMethod { Mouse, Keyboard };
-    enum Side { Snake, Mouse, None };
-    enum Difficulty { Easy, Medium, Difficult };
-    enum GameState { MainMenu, LoadGame, Score, Option, About, Exit, SelectControl, SelectDifficulty, InGame, Won, Lost, Results };
-    enum WallpaperType { Streched, Centered };
+
+    enum GameMode { Space, Classic };
+    enum GameState { MainMenu, Score, Option, About, Exit, SelectControl, SelectMode, InGame, Won, Lost, Results };
 
     /// <summary>
     /// This is the main type for your game
@@ -26,19 +26,31 @@ namespace SnakeGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        SpriteManager spriteManager;
-        
+        GameState gameState = GameState.MainMenu;
+
+        SpaceModeManager spaceMode;
+
+        // XACT stuff
+        AudioEngine audioEngine;
+        WaveBank waveBank;
+        SoundBank soundBank;
+        Cue trackCue;
+
+        InputController input;
+        MainMenu mainMenu;
+        ModeSelecting modeMenu;
+
         // Random number generator
         public Random rnd { get; private set; }
 
+        Rectangle window;
 
         public SnakeGame()
         {
             graphics = new GraphicsDeviceManager(this);
+            Content.RootDirectory = "Content";
 
             rnd = new Random();
-
-            Content.RootDirectory = "Content";
         }
 
         /// <summary>
@@ -49,16 +61,24 @@ namespace SnakeGame
         /// </summary>
         protected override void Initialize()
         {
+            // TODO: Add your initialization logic here
             graphics.PreferredBackBufferWidth = GetScreenDimensions.X;
             graphics.PreferredBackBufferHeight = GetScreenDimensions.Y;
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
 
-            spriteManager = new SpriteManager(this);
-            Components.Add(spriteManager);
 
-            spriteManager.setContentManager(Content);
-         
+            window = Window.ClientBounds;
+            input = new InputController(Content);
+            mainMenu = new MainMenu(Content, window);
+            modeMenu = new ModeSelecting(Content, window);
+
+            spaceMode = new SpaceModeManager(this);
+            Components.Add(spaceMode);
+            spaceMode.Enabled = false;
+            spaceMode.Visible = false;
+
+
             base.Initialize();
         }
 
@@ -70,6 +90,19 @@ namespace SnakeGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // Load the XACT data
+            audioEngine = new AudioEngine(@"Content\Audio\GameAudio.xgs");
+            waveBank = new WaveBank(audioEngine, @"Content\Audio\Wave Bank.xwb");
+            soundBank = new SoundBank(audioEngine, @"Content\Audio\Sound Bank.xsb");
+
+            // Start the soundtrack audio
+            trackCue = soundBank.GetCue("track");
+            trackCue.Play();
+
+            // Play the start sound
+            soundBank.PlayCue("start");
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -91,11 +124,44 @@ namespace SnakeGame
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || gameState == GameState.Exit)
                 this.Exit();
 
-            if (spriteManager.StopGame())
-                this.Exit();
+            switch (gameState)
+            {
+                case GameState.MainMenu:
+                    {
+                        mainMenu.Update(gameTime);
+                        gameState = mainMenu.getCurrentState(gameTime);
+                        break;
+                    }
+                case GameState.SelectMode:
+                    {
+                        // modeMenu.Update(gameTime);
+                        spaceMode.Enabled = true;
+                        spaceMode.Visible = true;
+                        gameState = GameState.InGame;
+                        break;
+                    }
+                case GameState.InGame:
+                    {
+                        if (spaceMode.isGameEnd())
+                        {
+                            spaceMode.Enabled = false;
+                            spaceMode.Visible = false;
+                            gameState = GameState.MainMenu;
+                        }
+                        break;
+                    }
+                case GameState.Results:
+                    {
+                        break;
+                    }
+            }
+
+
+            // Update the audio engine
+            audioEngine.Update();
 
             // TODO: Add your update logic here
 
@@ -108,7 +174,48 @@ namespace SnakeGame
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.Clear(Color.Black);
+
+            switch (gameState)
+            {
+                case GameState.MainMenu:
+                    {
+                        spriteBatch.Begin();
+
+                        mainMenu.Draw(gameTime, spriteBatch);
+                        input.drawCursor(gameTime, spriteBatch);
+
+                        spriteBatch.End();
+
+                        break;
+                    }
+                case GameState.SelectMode:
+                    {
+                        spriteBatch.Begin();
+
+                        modeMenu.Draw(gameTime, spriteBatch);
+                        input.drawCursor(gameTime, spriteBatch);
+
+                        spriteBatch.End();
+
+                        break;
+                    }
+                case GameState.InGame:
+                    {
+                        break;
+                    }
+                case GameState.Results:
+                    {
+                        break;
+                    }
+            }
+
             base.Draw(gameTime);
+        }
+
+        public void PlayCue(string cueName)
+        {
+            soundBank.PlayCue(cueName);
         }
 
         public Point GetScreenDimensions
@@ -116,17 +223,6 @@ namespace SnakeGame
             get
             {
                 return new Point(graphics.GraphicsDevice.DisplayMode.Width, graphics.GraphicsDevice.DisplayMode.Height);
-            }
-        }
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main(string[] args)
-        {
-            using (SnakeGame game = new SnakeGame())
-            {
-                game.Run();
             }
         }
     }

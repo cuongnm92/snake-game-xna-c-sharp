@@ -9,31 +9,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SnakeGame
 {
-    class Menu
+    abstract class Menu
     {
+        protected Rectangle window;
 
-        SpriteFont font;
-        Rectangle window;
-
-        Point frameSize;
 
         List<Button> buttons = new List<Button>();
 
-        public Menu(Point frameSize, SpriteFont font, Rectangle window)
+        public Menu(Rectangle window)
         {
-            this.font = font;
             this.window = window;
-            this.frameSize = frameSize;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             foreach (Button button in buttons)
                 button.Update(gameTime);
 
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             foreach (Button button in buttons)
                 button.Draw(gameTime, spriteBatch);

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -10,20 +9,20 @@ namespace SnakeGame
 {
     abstract class Sprite
     {
-        // Stuff needed to draw the sprite
-        Texture2D textureImage;
+        protected Texture2D textureImage;
         protected Point frameSize;
         protected Point currentFrame;
+        protected Point sheetSize;
         protected float scale = 1;
         protected float originalScale = 1;
 
-        // Speed stuff
+        // Speed
         Vector2 originalSpeed;
 
         // Collision data
         int collisionOffset;
 
-        // Framerate stuff
+        // Framerate speed
         int timeSinceLastFrame = 0;
         int millisecondsPerFrame;
         const int defaultMillisecondsPerFrame = 16;
@@ -32,7 +31,7 @@ namespace SnakeGame
         protected Vector2 speed;
         protected Vector2 position;
 
-        // Sound stuff
+        // Sound
         public string collisionCueName { get; private set; }
 
         // Abstract definition of direction property
@@ -49,19 +48,19 @@ namespace SnakeGame
 
 
         // Get/set score
-        public int scoreValue;
+        public int scoreValue { get; protected set; }
 
         public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
-            int collisionOffset, Point currentFrame, Vector2 speed,
+            int collisionOffset, Point currentFrame, Point sheetSize, Vector2 speed,
             string collisionCueName, int scoreValue)
             : this(textureImage, position, frameSize, collisionOffset, currentFrame,
-             speed, defaultMillisecondsPerFrame, collisionCueName,
+            sheetSize, speed, defaultMillisecondsPerFrame, collisionCueName,
             scoreValue)
         {
         }
 
         public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
-            int collisionOffset, Point currentFrame, Vector2 speed,
+            int collisionOffset, Point currentFrame, Point sheetSize, Vector2 speed,
             int millisecondsPerFrame, string collisionCueName, int scoreValue)
         {
             this.textureImage = textureImage;
@@ -69,18 +68,19 @@ namespace SnakeGame
             this.frameSize = frameSize;
             this.collisionOffset = collisionOffset;
             this.currentFrame = currentFrame;
+            this.sheetSize = sheetSize;
             this.speed = speed;
-            this.originalSpeed = speed;
+            originalSpeed = speed;
             this.collisionCueName = collisionCueName;
             this.millisecondsPerFrame = millisecondsPerFrame;
             this.scoreValue = scoreValue;
         }
 
         public Sprite(Texture2D textureImage, Vector2 position, Point frameSize,
-            int collisionOffset, Point currentFrame, Vector2 speed,
+            int collisionOffset, Point currentFrame, Point sheetSize, Vector2 speed,
             string collisionCueName, int scoreValue, float scale)
             : this(textureImage, position, frameSize, collisionOffset, currentFrame,
-             speed, defaultMillisecondsPerFrame, collisionCueName,
+            sheetSize, speed, defaultMillisecondsPerFrame, collisionCueName,
             scoreValue)
         {
             this.scale = scale;
@@ -95,7 +95,14 @@ namespace SnakeGame
             {
                 // Increment to next frame
                 timeSinceLastFrame = 0;
-                currentFrame.X = (currentFrame.X + 1) % 4;
+                ++currentFrame.X;
+                if (currentFrame.X >= sheetSize.X)
+                {
+                    currentFrame.X = 0;
+                    ++currentFrame.Y;
+                    if (currentFrame.Y >= sheetSize.Y)
+                        currentFrame.Y = 0;
+                }
             }
         }
 
@@ -155,16 +162,6 @@ namespace SnakeGame
         public void ResetSpeed()
         {
             speed = originalSpeed;
-        }
-
-        public void UpdateScore(int newPoint)
-        {
-            this.scoreValue += newPoint;
-        }
-
-        public int getScoreValue()
-        {
-            return this.scoreValue;
         }
     }
 }

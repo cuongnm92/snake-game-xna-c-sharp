@@ -4,38 +4,39 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SnakeGame
 {
-    class Rat : Sprite
+    class EvadingSprite : Sprite
     {
         // Save a reference to the sprite manager to
         // use to get the player position
-        SpriteManager spriteManager;
+        SpaceModeManager spriteManager;
 
         // Variables to delay evasion until player is close 
         float evasionSpeedModifier;
         int evasionRange;
         bool evade = false;
 
-        public Rat(Texture2D textureImage, Vector2 position,
-            Point frameSize, int collisionOffset, Point currentFrame, Vector2 speed, string collisionCueName,
-            SpriteManager spriteManager, float evasionSpeedModifier,
+        public EvadingSprite(Texture2D textureImage, Vector2 position,
+            Point frameSize, int collisionOffset, Point currentFrame,
+            Point sheetSize, Vector2 speed, string collisionCueName,
+            SpaceModeManager spriteManager, float evasionSpeedModifier,
             int evasionRange, int scoreValue)
             : base(textureImage, position, frameSize, collisionOffset,
-            currentFrame, speed, null, scoreValue)
+            currentFrame, sheetSize, speed, collisionCueName, scoreValue)
         {
             this.spriteManager = spriteManager;
             this.evasionSpeedModifier = evasionSpeedModifier;
             this.evasionRange = evasionRange;
         }
 
-        public Rat(Texture2D textureImage, Vector2 position,
+        public EvadingSprite(Texture2D textureImage, Vector2 position,
             Point frameSize, int collisionOffset, Point currentFrame,
-            Vector2 speed, int millisecondsPerFrame,
-            string collisionCueName, SpriteManager spriteManager,
+            Point sheetSize, Vector2 speed, int millisecondsPerFrame,
+            string collisionCueName, SpaceModeManager spriteManager,
             float evasionSpeedModifier, int evasionRange,
             int scoreValue)
             : base(textureImage, position, frameSize, collisionOffset,
-            currentFrame, speed, millisecondsPerFrame,
-            null, scoreValue)
+            currentFrame, sheetSize, speed, millisecondsPerFrame,
+            collisionCueName, scoreValue)
         {
             this.spriteManager = spriteManager;
             this.evasionSpeedModifier = evasionSpeedModifier;
@@ -60,26 +61,15 @@ namespace SnakeGame
             {
                 // Move away from the player horizontally
                 if (player.X < position.X)
-                {
                     position.X += Math.Abs(speed.Y);
-                    currentFrame.Y = 2;
-                }
                 else if (player.X > position.X)
-                {
                     position.X -= Math.Abs(speed.Y);
-                    currentFrame.Y = 1;
-                }
+
                 // Move away from the player vertically
                 if (player.Y < position.Y)
-                {
                     position.Y += Math.Abs(speed.X);
-                    currentFrame.Y = 0;
-                }
                 else if (player.Y > position.Y)
-                {
                     position.Y -= Math.Abs(speed.X);
-                    currentFrame.Y = 3;
-                }
             }
             else
             {
@@ -92,7 +82,7 @@ namespace SnakeGame
                 }
             }
 
-            // base.Update(gameTime, clientBounds);
+            base.Update(gameTime, clientBounds);
         }
     }
 }
