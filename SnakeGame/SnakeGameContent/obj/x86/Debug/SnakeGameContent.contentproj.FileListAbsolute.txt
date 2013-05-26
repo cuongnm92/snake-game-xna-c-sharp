@@ -1,4 +1,0 @@
-D:\WorkSpace\Projects\SnakeGame\SnakeGame\SnakeGameContent\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\WorkSpace\Projects\SnakeGame\SnakeGame\SnakeGameContent\obj\x86\Debug\Audio\GameAudio.xml
-D:\WorkSpace\Projects\group01-snake-game\SnakeGame\SnakeGameContent\obj\x86\Debug\ResolveAssemblyReference.cache
-D:\WorkSpace\Projects\group01-snake-game\SnakeGame\SnakeGameContent\obj\x86\Debug\Audio\GameAudio.xml
