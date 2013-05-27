@@ -5,13 +5,15 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 # from django.contrib import admin
 # admin.autodiscover()
 
-import setting
+import settings
 
 urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'snakeapp.views.home', name='home'),
     # url(r'^snakeapp/', include('snakeapp.foo.urls')),
 
+	url(r'^', include('home.urls')),
+	
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

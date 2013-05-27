@@ -123,6 +123,7 @@
     <Compile Include="SpaceMode\Sprites\ChasingSprite.cs" />
     <Compile Include="SpaceMode\Sprites\EvadingSprite.cs" />
     <Compile Include="SpaceMode\Sprites\Player.cs" />
+    <Compile Include="SpaceMode\Sprites\Rat.cs" />
     <Compile Include="SpaceMode\Sprites\Sprite.cs" />
   </ItemGroup>
   <ItemGroup>

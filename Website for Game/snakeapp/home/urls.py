@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from view import *
+from views import *
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 

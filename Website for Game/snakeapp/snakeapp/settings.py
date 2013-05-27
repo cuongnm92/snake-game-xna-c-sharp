@@ -2,7 +2,7 @@
 
 import os, sys
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -128,7 +128,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-	'mainpage'
+	'home'
 )
 
 # A sample logging configuration. The only tangible logging

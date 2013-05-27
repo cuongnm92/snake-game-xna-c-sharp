@@ -18,6 +18,8 @@ namespace SnakeGame
     /// </summary>
     public class SpaceModeManager : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        const int scoreAdd = 5;
+
         // SpriteBatch for drawing
         SpriteBatch spriteBatch;
 
@@ -41,6 +43,14 @@ namespace SnakeGame
         int automatedSpritePointValue = 10;
         int chasingSpritePointValue = 20;
         int evadingSpritePointValue = 0;
+
+        List<Rat> rats = new List<Rat>();
+
+        // Variables for spawning new rats
+        const int ratMaxSpawnTime = 100;
+        int ratTimeCount = 0;
+        int ratMinSpeed = 2;
+        int ratMaxSpeed = 6;
 
         // Lives
         List<AutomatedSprite> livesList = new List<AutomatedSprite>();
@@ -87,6 +97,7 @@ namespace SnakeGame
         {
             // Initialize spawn time
             ResetSpawnTime();
+            this.ratTimeCount = 0;
             playerScore = 0;
 
             map = new SpaceMap(Game.Content, 0, Game.Window.ClientBounds);
@@ -146,6 +157,13 @@ namespace SnakeGame
                 ResetSpawnTime();
             }
 
+            ratTimeCount++;
+            if (ratTimeCount > ratMaxSpawnTime)
+            {
+                ratTimeCount = 0;
+                SpawnRat();
+            }
+
             UpdateSprites(gameTime);
 
             // Adjust sprite spawn times
@@ -164,12 +182,57 @@ namespace SnakeGame
             // Update player
             player.Update(gameTime, Game.Window.ClientBounds);
 
+            for (int i = 0; i < rats.Count; i++)
+            {
+                rats[i].Update(gameTime, Game.Window.ClientBounds);
+            }
+
+            for (int i = 0; i < rats.Count; i++)
+            {
+                Rat r = rats[i];
+
+                // Check for collisions
+                if (r.collisionRect.Intersects(player.collisionRect))
+                {
+                    //Updata score value
+
+                    this.AddScore(scoreAdd);
+
+                    // Remove collided sprite from the game
+                    rats.RemoveAt(i);
+                    --i;
+                }
+
+                // Remove object if it is out of bounds
+                if (r.IsOutOfBounds(Game.Window.ClientBounds))
+                {
+                    rats.RemoveAt(i);
+                    --i;
+                }
+            }
+
             // Update all non-player sprites
             for (int i = 0; i < spriteList.Count; ++i)
             {
                 Sprite s = spriteList[i];
 
                 s.Update(gameTime, Game.Window.ClientBounds);
+
+                if (s is AutomatedSprite)
+                {
+                    for (int j = 0; j < rats.Count; j++)
+                    {
+                        Rat r = rats[j];
+
+                        // Check for collisions
+                        if (r.collisionRect.Intersects(s.collisionRect))
+                        {
+                            // Remove collided sprite from the game
+                            rats.RemoveAt(j);
+                            --j;
+                        }
+                    }
+                }
 
                 // Check for collisions
                 if (s.collisionRect.Intersects(player.collisionRect))
@@ -212,10 +275,11 @@ namespace SnakeGame
                     --i;
                 }
 
+
                 // Remove object if it is out of bounds
                 if (s.IsOutOfBounds(Game.Window.ClientBounds))
                 {
-                    this.AddScore(spriteList[i].scoreValue);
+                    // this.AddScore(spriteList[i].scoreValue);
                     spriteList.RemoveAt(i);
                     --i;
                 }
@@ -243,6 +307,11 @@ namespace SnakeGame
 
             // Draw the player
             player.Draw(gameTime, spriteBatch);
+
+            // Draw all rats
+
+            foreach (Rat r in rats)
+                r.Draw(gameTime, spriteBatch);
 
             // Draw all sprites
             foreach (Sprite s in spriteList)
@@ -385,6 +454,81 @@ namespace SnakeGame
                     .75f, 150, evadingSpritePointValue));
             }
         }
+
+        private void SpawnRat()
+        {
+            Vector2 speed = Vector2.Zero;
+            Vector2 position = Vector2.Zero;
+
+            // Default frame size
+            Point frameSize = new Point(40, 40);
+            Point currentFrame = new Point(0, 0);
+
+            // Randomly choose which side of the screen to place enemy,
+            // then randomly create a position along that side of the screen
+            // and randomly choose a speed for the enemy
+            switch (((SnakeGame)Game).rnd.Next(4))
+            {
+                case 0: // LEFT to RIGHT
+                    position = new Vector2(
+                        -frameSize.X, ((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferHeight
+                        - frameSize.Y));
+
+                    speed = new Vector2(((SnakeGame)Game).rnd.Next(
+                        ratMinSpeed,
+                        ratMaxSpeed), 0);
+
+                    currentFrame.Y = 2;
+                    break;
+
+                case 1: // RIGHT to LEFT
+                    position = new
+                        Vector2(
+                        Game.GraphicsDevice.PresentationParameters.BackBufferWidth,
+                        ((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferHeight
+                        - frameSize.Y));
+
+                    speed = new Vector2(-((SnakeGame)Game).rnd.Next(
+                       ratMinSpeed, ratMaxSpeed), 0);
+
+                    currentFrame.Y = 1;
+                    break;
+
+                case 2: // BOTTOM to TOP
+                    position = new Vector2(((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferWidth
+                        - frameSize.X),
+                        Game.GraphicsDevice.PresentationParameters.BackBufferHeight);
+
+                    speed = new Vector2(0,
+                       -((SnakeGame)Game).rnd.Next(ratMinSpeed,
+                       ratMaxSpeed));
+
+                    currentFrame.Y = 3;
+                    break;
+
+                case 3: // TOP to BOTTOM
+                    position = new Vector2(((SnakeGame)Game).rnd.Next(0,
+                        Game.GraphicsDevice.PresentationParameters.BackBufferWidth
+                        - frameSize.X), -frameSize.Y);
+
+                    speed = new Vector2(0,
+                        ((SnakeGame)Game).rnd.Next(ratMinSpeed,
+                        ratMaxSpeed));
+                    break;
+            }
+
+            // Create new Rat
+            rats.Add(
+                     new Rat(ratTexture, position, new Point(40, 40), 10, new Point(0, 0),
+                new Point(3, 4), speed, "boltcollision", this,
+                1f, 150, evadingSpritePointValue)); ;
+
+        }
+
+
 
         // Return current position of the player sprite
         public Vector2 GetPlayerPosition()
