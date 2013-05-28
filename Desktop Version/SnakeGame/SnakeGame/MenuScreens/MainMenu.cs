@@ -23,6 +23,7 @@ namespace SnakeGame
         Texture2D nameMenuTexture;
         Texture2D startGameButton;
         Texture2D achGameButton;
+        Texture2D howPlayButton;
         Texture2D optionGameButton;
         Texture2D aboutGameButton;
         Texture2D exitGameButton;
@@ -45,6 +46,7 @@ namespace SnakeGame
             nameMenuTexture = this.content.Load<Texture2D>(@"Images\logo");
             startGameButton = this.content.Load<Texture2D>(@"Images\Button\StartGameMenuButton");
             achGameButton = this.content.Load<Texture2D>(@"Images\Button\ScoreMainMenuButton");
+            howPlayButton = this.content.Load<Texture2D>(@"Images\Button\HowPlay");
             optionGameButton = this.content.Load<Texture2D>(@"Images\Button\OptionGameMenuButton");
             aboutGameButton = this.content.Load<Texture2D>(@"Images\Button\AboutGameMenuButton");
             exitGameButton = this.content.Load<Texture2D>(@"Images\Button\ExitGameMenuButton");
@@ -60,9 +62,9 @@ namespace SnakeGame
 
             this.AddButton(startGameButton, center + new Vector2(300, 250), 1);
             this.AddButton(achGameButton, center + new Vector2(300, 300), 2);
-            this.AddButton(optionGameButton, center + new Vector2(300, 350), 3);
-            this.AddButton(aboutGameButton, center + new Vector2(300, 400), 4);
-            this.AddButton(exitGameButton, center + new Vector2(300, 450), 5);
+            this.AddButton(howPlayButton, center + new Vector2(300, 350), 3);
+            //this.AddButton(aboutGameButton, center + new Vector2(300, 400), 4);
+            this.AddButton(exitGameButton, center + new Vector2(300, 400), 5);
 
         }
 
@@ -73,8 +75,9 @@ namespace SnakeGame
 
         public GameState getCurrentState(GameTime gameTime)
         {
-            if (this.ClickedButtonPurpose == 1) return GameState.SelectMode;
+            if (this.ClickedButtonPurpose == 1) return GameState.InGame;
             if (this.ClickedButtonPurpose == 2) return GameState.Score;
+            if (this.ClickedButtonPurpose == 3) return GameState.HowToPlay;
             if (this.ClickedButtonPurpose == 5) return GameState.Exit;
 
             return GameState.MainMenu;

@@ -125,6 +125,7 @@
     <Compile Include="SpaceMode\Sprites\Player.cs" />
     <Compile Include="SpaceMode\Sprites\Rat.cs" />
     <Compile Include="SpaceMode\Sprites\Sprite.cs" />
+    <Compile Include="TextBox.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

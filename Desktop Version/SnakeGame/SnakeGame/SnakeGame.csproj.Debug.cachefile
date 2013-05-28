@@ -35,6 +35,10 @@ Content\Audio\skullcollision.xnb
 Content\Audio\start.xnb
 Content\Audio\threebladescollision.xnb
 Content\Audio\track.xnb
+Content\Images\Button\HowPlay.xnb
+Content\Images\howtoplay.xnb
+Content\Images\Input\text-box.xnb
+Content\Fonts\Text.xnb
 Content\Audio\GameAudio.xgs
 Content\Audio\Wave Bank.xwb
 Content\Audio\Sound Bank.xsb

@@ -19,7 +19,7 @@ namespace SnakeGame
 {
 
     enum GameMode { Space, Classic };
-    enum GameState { MainMenu, Score, Option, About, Exit, SelectControl, SelectMode, InGame, Won, Lost, Results, GameOver };
+    enum GameState { MainMenu, Score, Option, About, Exit, SelectControl, SelectMode, InGame, Won, Lost, Results, GameOver, HowToPlay };
 
     /// <summary>
     /// This is the main type for your game
@@ -41,9 +41,14 @@ namespace SnakeGame
         InputController input;
         MainMenu mainMenu;
         ModeSelecting modeMenu;
+        TextBox textBox;
+
 
         public int score;
         SpriteFont scoreFont;
+        SpriteFont textFont;
+
+        Texture2D textBoxTexture;
 
         ScoreManager scoreManager;
 
@@ -87,6 +92,8 @@ namespace SnakeGame
 
             scoreManager = new ScoreManager();
 
+            textBox = new TextBox();
+
             base.Initialize();
         }
 
@@ -104,7 +111,9 @@ namespace SnakeGame
             waveBank = new WaveBank(audioEngine, @"Content\Audio\Wave Bank.xwb");
             soundBank = new SoundBank(audioEngine, @"Content\Audio\Sound Bank.xsb");
             scoreFont = Content.Load<SpriteFont>(@"Fonts\Score");
+            textFont = Content.Load<SpriteFont>(@"Fonts\Text");
 
+            textBoxTexture = Content.Load<Texture2D>(@"Images\Input\text-box");
             // Start the soundtrack audio
             trackCue = soundBank.GetCue("track");
             trackCue.Play();
@@ -142,19 +151,27 @@ namespace SnakeGame
                     {
                         mainMenu.Update(gameTime);
                         gameState = mainMenu.getCurrentState(gameTime);
-                        break;
-                    }
-                case GameState.SelectMode:
-                    {
-                        modeMenu.Update(gameTime);
-                        spaceMode.Enabled = true;
-                        spaceMode.Visible = true;
-                        gameState = GameState.InGame;
-                        // gameState = GameState.GameOver;
+                        if (gameState == GameState.InGame)
+                        {
+                            spaceMode.Enabled = true;
+                            spaceMode.Visible = true;
+                        }
                         break;
                     }
                 case GameState.Score:
                     {
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                        {
+                            gameState = GameState.MainMenu;
+                        }
+                        break;
+                    }
+                case GameState.HowToPlay:
+                    {
+                        if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                        {
+                            gameState = GameState.MainMenu;
+                        }
                         break;
                     }
                 case GameState.InGame:
@@ -165,6 +182,7 @@ namespace SnakeGame
                             spaceMode.Enabled = false;
                             spaceMode.Visible = false;
                             gameState = GameState.GameOver;
+                            textBox.ResetName();
                         }
                         break;
                     }
@@ -172,6 +190,8 @@ namespace SnakeGame
                     {
                         if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                         {
+                            scoreManager.addScore(this.score);
+                            scoreManager.writeFile();
                             gameState = GameState.MainMenu;
                         }
 
@@ -209,17 +229,6 @@ namespace SnakeGame
 
                         break;
                     }
-                case GameState.SelectMode:
-                    {
-                        spriteBatch.Begin();
-
-                        modeMenu.Draw(gameTime, spriteBatch);
-                        input.drawCursor(gameTime, spriteBatch);
-
-                        spriteBatch.End();
-
-                        break;
-                    }
                 case GameState.Score:
                     {
                         spriteBatch.Begin();
@@ -229,16 +238,35 @@ namespace SnakeGame
                         scoreManager.readFile();
 
                         string text;
+                        int len;
                         for (int i = 0; i < scoreManager.getLimit(); i++)
                         {
-                            text = i + "/ " + scoreManager.getScore(i).ToString();
+                            text = (i + 1) + "/ " + scoreManager.getScore(i).ToString();
+                            len = scoreManager.getScore(i).ToString().Length;
+                            for (int j = len; j < 10; j++) text = text + " ";
                             // Find the center of the string
                             Vector2 FontOrigin = scoreFont.MeasureString(text) / 2;
                             // Draw the string
-                            spriteBatch.DrawString(scoreFont, text, new Vector2(400, 275 + 100 * i), Color.LightGreen,
-                                0, FontOrigin, 3.0f, SpriteEffects.None, 0.5f);
+                            spriteBatch.DrawString(scoreFont, text, new Vector2(400, 275 + 75 * i), Color.Yellow,
+                                0, FontOrigin, 2.5f, SpriteEffects.None, 0.5f);
 
                         }
+
+                        String returnMess = "press Enter key to return main menu";
+
+                        spriteBatch.DrawString(scoreFont, returnMess, new Vector2(500, 275 + 75 * 5), Color.LightGreen,
+                                0, scoreFont.MeasureString(returnMess) / 2, 2.0f, SpriteEffects.None, 0.5f);
+
+
+                        spriteBatch.End();
+
+                        break;
+                    }
+                case GameState.HowToPlay:
+                    {
+                        spriteBatch.Begin();
+
+                        spriteBatch.Draw(Content.Load<Texture2D>(@"Images\howtoplay"), new Rectangle(0, 0, window.Width, window.Height), Color.White);
 
                         spriteBatch.End();
 
@@ -265,6 +293,13 @@ namespace SnakeGame
 
                         spriteBatch.DrawString(scoreFont, gameover, new Vector2(678, 530), Color.LightGreen,
                                 0, scoreFont.MeasureString(gameover) / 2, 2.0f, SpriteEffects.None, 0.5f);
+
+                        /*
+                        spriteBatch.Draw(textBoxTexture, new Rectangle(550, 600, 250, 50), Color.White);
+
+                        string name = textBox.getName();
+                        spriteBatch.DrawString(scoreFont, name, new Vector2(575, 600), Color.Black);
+                        */
 
                         spriteBatch.End();
                         break;
