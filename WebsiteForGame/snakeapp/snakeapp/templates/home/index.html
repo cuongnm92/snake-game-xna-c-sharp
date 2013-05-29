@@ -11,6 +11,9 @@
     <meta name="author" content="">
 	
 	<link href="{{ STATIC_PREFIX }}css/style.css" rel="stylesheet" type="text/css" media="screen">
+	<link href="{{ STATIC_PREFIX }}css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen">
+	<link href="{{ STATIC_PREFIX }}css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" media="screen">
+	
 	<style>
             *{
                 margin:0;
@@ -46,23 +49,80 @@
 	<img src="{{ STATIC_PREFIX }}img/bg.jpg" class="bg">
 	<div class="menu">
         <div class="item">
-            <a class="link icon_help"></a>
+            <a class="link icon_help" href="#introModal" data-toggle="modal" role="button"></a>
             <div class="item_content">
                 <h2> Introduction </h2>
             </div>
         </div>
         <div class="item">
-            <a class="link icon_find"></a>
+            <a class="link icon_find" href="#downModal" data-toggle="modal" role="button"></a>
             <div class="item_content">
                 <h2> Download </h2>
             </div>
         </div>
     </div>
-		
+	
+	<!-- Modal For Download -->
+	<div id="downModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel"> Download </h3>
+		</div>
+		<div class="modal-body">
+			<h2> Desktop Version </h2>
+			<p> Setup   : <a href="https://dl.dropboxusercontent.com/u/72278036/Setup.rar"> Clink here </a> </p>
+			<p> Source code : <a href="https://github.com/cuongnm92/group01-snake-game"> Click here </a> </p>
+			<p style="color:red"> <i> Requirements : Dot Net 4.0 Framework </i> </p>
+			<hr class="featurette-divider">
+			
+			<h2> Mobile Version </h2>
+			<p> Source code : <a href="https://github.com/cuongnm92/group01-snake-game"> Clink here </a> </p> 
+			<p style="color:red"> <b> Developing  </b> </i> </p>
+			<p style="color:blue"> <i> Android Game using AndEngine. Released as open source </i> </p>
+			<hr class="featurette-divider">
+			
+			<h2> Online Version </h2>
+			<p> Source code : <a href="https://github.com/cuongnm92/group01-snake-game"> Clink here </a> </p> 
+			<p style="color:red"> <b> Developing  </b> </i> </p>
+			<p style="color:violet"> <i> HTML5 Games. Released as open source </i> </p>
+			<hr class="featurette-divider">
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
+	
+	<!-- Modal For Introduction -->	
+	<div id="introModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="myModalLabel"> Introduction </h3>
+		</div>
+		<div class="modal-body">
+		    <p style="color:blue"> <i> A modern snake game (Snake Game - Space) is developed for an assignment of class INT2031. 
+			This project is mainly for desktop, but mobile and online versions is promise extention games. They released as open source.</i> </p>
+			<hr class="featurette-divider">
+			<h2> Group 01 </h2>
+			<p> <span> <img src="{{ STATIC_PREFIX }}img/thinh.png" style="width=60px;height=60px"/> <b> Nguyễn Khánh Thịnh - K55CA  </b> <span> </p>
+			<hr>
+			<p> <span> <b> Đỗ Khắc Phong - K55CA </b> <img src="{{ STATIC_PREFIX }}img/phong.png" style="width=60px;height=60px"/> <span> </p>
+			<hr>
+			<p> <span> <img src="{{ STATIC_PREFIX }}img/linh.png" style="width=60px;height=60px"/> <b> Tô Ngọc Linh - K55CA  </b> <span> </p>
+			<hr>
+			<p> <span> <b> Nguyễn Mạnh Cường - K55CA </b> <img src="{{ STATIC_PREFIX }}img/cuong.png" style="width=60px;height=60px"/> <span> </p>
+			<hr>
+			<hr class="featurette-divider">
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		</div>
+	</div>
+	
 	<script src="{{ STATIC_PREFIX }}js/jquery.js" type="text/javascript"></script>
     <script src="{{ STATIC_PREFIX }}js/home.js" type="text/javascript"></script>
 	<script src="{{ STATIC_PREFIX }}js/jquery-css-transform.js" type="text/javascript"></script>
     <script src="{{ STATIC_PREFIX }}js/jquery-animate-css-rotate-scale.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/bootstrap.min.js" type="text/javascript"></script>
     
 	<script>
             $('.item').hover(
