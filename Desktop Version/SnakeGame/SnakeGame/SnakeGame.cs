@@ -193,6 +193,12 @@ namespace SnakeGame
                             scoreManager.addScore(this.score);
                             scoreManager.writeFile();
                             gameState = GameState.MainMenu;
+
+                            Components.Remove(spaceMode);
+                            spaceMode = new SpaceModeManager(this);
+                            Components.Add(spaceMode);
+                            spaceMode.Enabled = false;
+                            spaceMode.Visible = false;
                         }
 
                         break;

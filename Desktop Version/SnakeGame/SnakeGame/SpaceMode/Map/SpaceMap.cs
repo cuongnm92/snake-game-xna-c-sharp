@@ -45,6 +45,10 @@ namespace SnakeGame
         public void updateBackgroundMap()
         {
             this.backgroundMap.Add(content.Load<Texture2D>(@"Images\Map\space-1"));
+            this.backgroundMap.Add(content.Load<Texture2D>(@"Images\Map\space-2"));
+            this.backgroundMap.Add(content.Load<Texture2D>(@"Images\Map\space-3"));
+            this.backgroundMap.Add(content.Load<Texture2D>(@"Images\Map\space-4"));
+            this.backgroundMap.Add(content.Load<Texture2D>(@"Images\Map\space-5"));
         }
 
         public void Update(GameTime gameTime)

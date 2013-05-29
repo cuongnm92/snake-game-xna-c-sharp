@@ -93,7 +93,7 @@ namespace SnakeGame
                 }
             }
 
-            // base.Update(gameTime, clientBounds);
+            base.PlayerUpdate(gameTime, clientBounds);
         }
     }
 }

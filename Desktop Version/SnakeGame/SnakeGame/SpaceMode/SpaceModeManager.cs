@@ -522,7 +522,7 @@ namespace SnakeGame
 
             // Create new Rat
             rats.Add(
-                     new Rat(ratTexture, position, new Point(40, 40), 10, new Point(0, 0),
+                     new Rat(ratTexture, position, new Point(40, 40), 10, currentFrame,
                 new Point(3, 4), speed, "boltcollision", this,
                 1f, 150, evadingSpritePointValue)); ;
 

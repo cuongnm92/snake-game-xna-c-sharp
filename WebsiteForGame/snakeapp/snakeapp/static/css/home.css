@@ -1,0 +1,13 @@
+ .fullBg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+
+#maincontent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
